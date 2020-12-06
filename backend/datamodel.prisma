@@ -1,0 +1,40 @@
+# datamodel define o schema no banco de dados // cada type é uma tabela
+# os tipos são mapeados para o BD // serve de base para fazer o crud
+type User {
+  id: ID! @unique
+  name: String!
+  email: String! @unique
+  password: String!
+}
+
+type Account {
+  id: ID! @unique
+  user: User # Relação unidirecional com o type User
+  description: String!
+}
+
+enum Operation {
+  DEBIT
+  CREDIT
+}
+
+type Category {
+  id: ID! @unique
+  user: User
+  description: String!
+  operation: Operation
+}
+
+type Record {
+  id: ID! @unique
+  user: User!
+  account: Account!
+  category: Category!
+  amount: Float!
+  type: Operation!
+  data: DateTime!
+  description: String!
+  tags: String
+  note: String!
+}
+
