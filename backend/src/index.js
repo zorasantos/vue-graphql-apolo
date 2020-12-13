@@ -1,18 +1,20 @@
 // Acessa a camada de dados
-const { prisma } = require('./generated/prisma-client')
 const { GraphQLServer } = require('graphql-yoga')
+const Binding = require('prisma-binding')
+const { prisma } = require('./generated/prisma-client')
 // Resolvers são funções que implementam alguma lógica que devolve valores
-const resolvers = {
-  Query: {
-    user(parent, args, context, info) {
-      return prisma.user({ id: args.id })
-    }
-  }
-}
+const resolvers = require('./resolvers')
 
 const server = new GraphQLServer({
   typeDefs: `${__dirname}/schema.graphql`,
-  resolvers
+  resolvers,
+  context: {
+    db: new Binding.Prisma({
+      typeDefs: `${__dirname}/generated/graphql-schema/prisma.graphql`,
+      endpoint: process.env.PRISMA_ENDPOINT
+    }),
+    prisma
+  }
 })
 
 server.start()
