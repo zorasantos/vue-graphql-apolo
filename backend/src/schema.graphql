@@ -1,6 +1,6 @@
 # todos os campos precisam de um resolver
 type Query {
-  user(id: ID!): User
+  user: User
 }
 
 type Mutation {
