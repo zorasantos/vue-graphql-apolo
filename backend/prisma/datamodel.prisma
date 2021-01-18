@@ -32,9 +32,9 @@ type Record {
   category: Category!
   amount: Float!
   type: Operation!
-  data: DateTime!
+  date: DateTime!
   description: String!
   tags: String
-  note: String!
+  note: String
 }
 
