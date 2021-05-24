@@ -4,6 +4,12 @@ type Query {
   user: User
   accounts: [ Account! ]!
   categories(operation: Operation): [ Category! ]!
+  records(
+    month: String,
+    type: Operation,
+    accountsIds: [ ID! ],
+    categoriesIds: [ ID! ]
+  ): [ Record! ]!
 }
 
 type Mutation {
