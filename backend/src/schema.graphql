@@ -10,6 +10,7 @@ type Query {
     accountsIds: [ ID! ],
     categoriesIds: [ ID! ]
   ): [ Record! ]!
+  totalBalance(date: Date!): Float!
 }
 
 type Mutation {
