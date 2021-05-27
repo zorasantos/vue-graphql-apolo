@@ -1,5 +1,11 @@
 <template>
   <v-container fill-height>
+    <Snackbar
+      :error="error"
+      :myTimeout="myTimeout"
+      :showSnackbar="showSnackbar"
+      @close="closeSnackbar"
+    />
     <v-row justify="center">
       <v-col
         cols="12"
@@ -8,6 +14,10 @@
         lg="4"
       >
         <v-card class="elevation-3">
+          <v-progress-linear
+            v-show="isLoading"
+            indeterminate
+          />
           <v-card-title class="d-flex justify-center font-weight-regular">{{ texts.title }}</v-card-title>
           <v-card-subtitle class="d-flex justify-center">Bem-vindo à vue finances</v-card-subtitle>
           <v-card-text>
@@ -53,7 +63,8 @@
             <v-card-actions>
               <v-btn
                 v-bind="attrsBtn"
-                @click="login"
+                @click="submit"
+                :disabled="!!isLoading"
               >
                 {{ texts.button }}
               </v-btn>
@@ -76,11 +87,21 @@
 
 <script>
 import { required, email, minLength } from 'vuelidate/lib/validators'
+import AuthService from './../services/auth-services'
+
+import Snackbar from '../../../components/Snackbar'
+import { formatError } from '@/utils'
+
 export default {
   name: 'Login',
+  components: { Snackbar },
   data: () => {
     return {
       isLogin: true,
+      isLoading: false,
+      error: undefined,
+      showSnackbar: false,
+      myTimeout: '3000',
       attrsBtn: {
         color: '#f6cb27',
         class: 'black--text font-weight-regular',
@@ -151,9 +172,25 @@ export default {
     }
   },
   methods: {
-    login () {
-      console.log('Vuelidate: ', this.$v)
-      console.log('Vuelidate: ', this.user)
+    async submit () {
+      if (!this.$v.user.$invalid) {
+        this.isLoading = true
+        try {
+          const authData = this.isLogin
+            ? await AuthService.login(this.user)
+            : await AuthService.signup(this.user)
+          console.log(authData, 'authData')
+        } catch (err) {
+          this.error = formatError(err.message)
+          this.showSnackbar = true
+          setTimeout(() => { this.showSnackbar = false }, 4000)
+        } finally {
+          this.isLoading = false
+        }
+      }
+    },
+    closeSnackbar () {
+      this.showSnackbar = false
     }
   }
 }
