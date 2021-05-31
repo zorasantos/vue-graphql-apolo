@@ -176,10 +176,10 @@ export default {
       if (!this.$v.user.$invalid) {
         this.isLoading = true
         try {
-          const authData = this.isLogin
+          this.isLogin
             ? await AuthService.login(this.user)
             : await AuthService.signup(this.user)
-          console.log(authData, 'authData')
+          this.$router.push(this.$route.query.redirect || '/dashboard')
         } catch (err) {
           this.error = formatError(err.message)
           this.showSnackbar = true
